@@ -18,8 +18,11 @@ import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ClientController.class)
 @AutoConfigureMockMvc
@@ -79,4 +82,19 @@ public class ClientControllerTest {
         // Then
         resultActions.andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testGivenClientsThenGetAverageAge() throws Exception {
+        // Given
+        when(clientService.getAverageAge()).thenReturn(25.0);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/kpideclientes")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.averageAge").value(25.0));
+    }
+
 }
