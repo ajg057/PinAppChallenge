@@ -41,7 +41,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testGetAverageAge() {
+    public void testGetAverageAgeAndAgeStandardDeviation() {
         // Given
         Client client1 = new Client();
         client1.setFechaNacimiento(LocalDate.of(1990, 1, 1));
@@ -53,8 +53,10 @@ public class ClientServiceTest {
 
         // When
         double averageAge = clientService.getAverageAge();
+        double ageStandardDeviation = clientService.getAgeStandardDeviation();
 
         // Then
         assertEquals(29.0, averageAge);
+        assertEquals(5.0, ageStandardDeviation);
     }
 }

@@ -1,6 +1,6 @@
 package com.challenge.pinapp.controllers;
 
-import com.challenge.pinapp.dto.AverageAgeResponse;
+import com.challenge.pinapp.dto.ClientStatisticResponseDTO;
 import com.challenge.pinapp.dto.ClientDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.service.ClientService;
@@ -35,15 +35,17 @@ public class ClientController {
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get average age of clients")
+    @Operation(summary = "Get average age and standard deviation of ages of clients")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved average age"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved average age and standard deviation"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/kpideclientes")
-    public ResponseEntity<AverageAgeResponse> getAverageAge() {
+    public ResponseEntity<ClientStatisticResponseDTO> getClientStatistics() {
         double averageAge = clientService.getAverageAge();
-        AverageAgeResponse response = new AverageAgeResponse(averageAge);
+        double standardDeviation = clientService.getAgeStandardDeviation();
+
+        ClientStatisticResponseDTO response = new ClientStatisticResponseDTO(averageAge, standardDeviation);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

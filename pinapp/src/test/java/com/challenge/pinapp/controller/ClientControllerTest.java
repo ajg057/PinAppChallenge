@@ -97,4 +97,20 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$.averageAge").value(25.0));
     }
 
+    @Test
+    public void testGetClientStatistics() throws Exception {
+        // Given
+        when(clientService.getAverageAge()).thenReturn(30.5);
+        when(clientService.getAgeStandardDeviation()).thenReturn(5.0);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/kpideclientes")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.averageAge").value(30.5))
+                .andExpect(jsonPath("$.ageStandardDeviation").value(5.0));
+    }
+
 }
