@@ -5,9 +5,11 @@ import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -31,5 +33,15 @@ public class ClientServiceImpl implements ClientService {
 
     private int calcularEdad(LocalDate fechaNacimiento) {
         return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public double getAverageAge() {
+        List<Client> clients = clientRepository.findAll();
+        return clients.stream()
+                .mapToInt(Client::getEdad)
+                .average()
+                .orElse(0.0);
     }
 }

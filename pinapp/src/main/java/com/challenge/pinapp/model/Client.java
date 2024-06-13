@@ -20,4 +20,8 @@ public class Client {
     private String apellido;
     private LocalDate fechaNacimiento;
     private int edad;
+
+    public int getEdad() {
+        return LocalDate.now().getYear() - fechaNacimiento.getYear();
+    }
 }
