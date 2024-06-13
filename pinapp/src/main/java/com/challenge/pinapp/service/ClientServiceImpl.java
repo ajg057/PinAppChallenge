@@ -1,6 +1,7 @@
 package com.challenge.pinapp.service;
 
 import com.challenge.pinapp.dto.ClientDTO;
+import com.challenge.pinapp.dto.ClientInfoResponseDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -54,6 +56,21 @@ public class ClientServiceImpl implements ClientService {
                 .average()
                 .orElse(0.0);
         return Math.sqrt(variance);
+    }
+
+    @Override
+    public List<ClientInfoResponseDTO> getAllClients() {
+        List<Client> clients = clientRepository.findAll();
+        return clients.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ClientInfoResponseDTO convertToDTO(Client client) {
+        return new ClientInfoResponseDTO(client.getId(),
+                client.getNombre(), client.getApellido(),
+                client.getFechaNacimiento(),
+                calcularEdad(client.getFechaNacimiento()));
     }
 
 }

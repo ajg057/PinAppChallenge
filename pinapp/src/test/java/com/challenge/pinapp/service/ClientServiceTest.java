@@ -37,7 +37,7 @@ public class ClientServiceTest {
         // Then
         assertEquals("John", client.getNombre());
         assertEquals("Connor", client.getApellido());
-        assertEquals(39, client.getEdad()); // Assuming current year is 2021
+        assertEquals(39, client.getEdad());
     }
 
     @Test
