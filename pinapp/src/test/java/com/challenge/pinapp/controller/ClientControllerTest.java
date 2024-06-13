@@ -2,6 +2,7 @@ package com.challenge.pinapp.controller;
 
 import com.challenge.pinapp.controllers.ClientController;
 import com.challenge.pinapp.dto.ClientDTO;
+import com.challenge.pinapp.dto.ClientInfoResponseDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -111,6 +115,43 @@ public class ClientControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.averageAge").value(30.5))
                 .andExpect(jsonPath("$.ageStandardDeviation").value(5.0));
+    }
+
+    @Test
+    public void testGetAllClients() throws Exception {
+        // Given
+        ClientInfoResponseDTO client1 = new ClientInfoResponseDTO(1L, "John", "Doe", LocalDate.of(1985, 5, 15), 36);
+        ClientInfoResponseDTO client2 = new ClientInfoResponseDTO(2L, "Jane", "Smith", LocalDate.of(1990, 8, 25), 31);
+        List<ClientInfoResponseDTO> clientList = Arrays.asList(client1, client2);
+
+        when(clientService.getAllClients()).thenReturn(clientList);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/listclients")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(clientList.size()))
+                .andExpect(jsonPath("$[0].id").value(client1.getId()))
+                .andExpect(jsonPath("$[0].nombre").value(client1.getNombre()))
+                .andExpect(jsonPath("$[0].apellido").value(client1.getApellido()))
+                .andExpect(jsonPath("$[1].id").value(client2.getId()))
+                .andExpect(jsonPath("$[1].nombre").value(client2.getNombre()))
+                .andExpect(jsonPath("$[1].apellido").value(client2.getApellido()));
+    }
+
+    @Test
+    public void testGetAllClientsWhenEmptyList() throws Exception {
+        // Given
+        when(clientService.getAllClients()).thenReturn(Collections.emptyList());
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/listclients")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isNotFound());
     }
 
 }

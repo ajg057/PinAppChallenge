@@ -1,7 +1,8 @@
 package com.challenge.pinapp.controllers;
 
-import com.challenge.pinapp.dto.ClientStatisticResponseDTO;
 import com.challenge.pinapp.dto.ClientDTO;
+import com.challenge.pinapp.dto.ClientInfoResponseDTO;
+import com.challenge.pinapp.dto.ClientStatisticResponseDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,5 +50,20 @@ public class ClientController {
 
         ClientStatisticResponseDTO response = new ClientStatisticResponseDTO(averageAge, standardDeviation);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all client information", description = "Returns clients with its data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The clients were not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/listclients")
+    public ResponseEntity<List<ClientInfoResponseDTO>> getAllClients() {
+        List<ClientInfoResponseDTO> clients = clientService.getAllClients();
+        if (clients.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 }
