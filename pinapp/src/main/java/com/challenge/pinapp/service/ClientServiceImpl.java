@@ -44,4 +44,16 @@ public class ClientServiceImpl implements ClientService {
                 .average()
                 .orElse(0.0);
     }
+
+    @Override
+    public double getAgeStandardDeviation() {
+        List<Client> clients = clientRepository.findAll();
+        double average = getAverageAge();
+        double variance = clients.stream()
+                .mapToDouble(client -> Math.pow(client.getEdad() - average, 2))
+                .average()
+                .orElse(0.0);
+        return Math.sqrt(variance);
+    }
+
 }

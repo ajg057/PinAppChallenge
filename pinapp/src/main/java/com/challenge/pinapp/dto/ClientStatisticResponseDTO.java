@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AverageAgeResponse {
+public class ClientStatisticResponseDTO {
     private double averageAge;
+    private double ageStandardDeviation;
 }
