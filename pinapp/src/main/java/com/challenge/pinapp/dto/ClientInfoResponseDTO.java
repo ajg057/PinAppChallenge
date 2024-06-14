@@ -13,4 +13,5 @@ public class ClientInfoResponseDTO {
     private String apellido;
     private LocalDate fechaNacimiento;
     private int edad;
+    private LocalDate probableFechaMuerte;
 }

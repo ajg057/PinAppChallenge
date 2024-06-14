@@ -6,12 +6,14 @@ import com.challenge.pinapp.repository.ClientRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -24,20 +26,28 @@ public class ClientServiceTest {
     private ClientServiceImpl clientService;
 
     @Test
-    public void testCreateCliente() {
+    public void testCreateClient() {
         // Given
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setNombre("John");
         clientDTO.setApellido("Connor");
         clientDTO.setFechaNacimiento(LocalDate.of(1985, 2, 28));
 
+        Client client = new Client();
+        client.setNombre(clientDTO.getNombre());
+        client.setApellido(clientDTO.getApellido());
+        client.setFechaNacimiento(clientDTO.getFechaNacimiento());
+        client.setEdad(client.getEdad());
+
         // When
-        Client client = clientService.createClient(clientDTO);
+        Mockito.when(clientRepository.save(Mockito.any(Client.class))).thenReturn(client);
+        Client createdClient = clientService.createClient(clientDTO);
 
         // Then
-        assertEquals("John", client.getNombre());
-        assertEquals("Connor", client.getApellido());
-        assertEquals(39, client.getEdad());
+        assertNotNull(createdClient);
+        assertEquals("John", createdClient.getNombre());
+        assertEquals("Connor", createdClient.getApellido());
+        assertEquals(39, createdClient.getEdad());
     }
 
     @Test

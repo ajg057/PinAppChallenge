@@ -4,13 +4,13 @@ import com.challenge.pinapp.dto.ClientDTO;
 import com.challenge.pinapp.dto.ClientInfoResponseDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.repository.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +18,6 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
 
-    @Autowired
     public ClientServiceImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
@@ -70,7 +69,12 @@ public class ClientServiceImpl implements ClientService {
         return new ClientInfoResponseDTO(client.getId(),
                 client.getNombre(), client.getApellido(),
                 client.getFechaNacimiento(),
-                calcularEdad(client.getFechaNacimiento()));
+                calcularEdad(client.getFechaNacimiento()),
+                calculateProbableDeathDate(client));
     }
 
+    private LocalDate calculateProbableDeathDate(Client client) {
+        int remainingYears = new Random().nextInt(100 - client.getEdad()) + 1;
+        return client.getFechaNacimiento().plusYears(client.getEdad() + remainingYears);
+    }
 }

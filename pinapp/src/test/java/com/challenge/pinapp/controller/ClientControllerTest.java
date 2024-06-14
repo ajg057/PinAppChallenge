@@ -53,7 +53,7 @@ public class ClientControllerTest {
         client.setNombre(clientDTO.getNombre());
         client.setApellido(clientDTO.getApellido());
         client.setFechaNacimiento(clientDTO.getFechaNacimiento());
-        client.setEdad(41);
+        client.setEdad(44);
 
         when(clientService.createClient(any(ClientDTO.class))).thenReturn(client);
 
@@ -67,7 +67,7 @@ public class ClientControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nombre").value("John"))
                 .andExpect(jsonPath("$.apellido").value("Doe"))
-                .andExpect(jsonPath("$.edad").value(41));
+                .andExpect(jsonPath("$.edad").value(44));
     }
 
     @Test
@@ -120,8 +120,20 @@ public class ClientControllerTest {
     @Test
     public void testGetAllClients() throws Exception {
         // Given
-        ClientInfoResponseDTO client1 = new ClientInfoResponseDTO(1L, "John", "Doe", LocalDate.of(1985, 5, 15), 36);
-        ClientInfoResponseDTO client2 = new ClientInfoResponseDTO(2L, "Jane", "Smith", LocalDate.of(1990, 8, 25), 31);
+        ClientInfoResponseDTO client1 = new ClientInfoResponseDTO(1L,
+                "John",
+                "Doe",
+                LocalDate.of(1985, 5, 15),
+                36,
+                LocalDate.of(2077, 1, 1));
+
+        ClientInfoResponseDTO client2 = new ClientInfoResponseDTO(
+                2L,
+                "Jane",
+                "Smith",
+                LocalDate.of(1990, 8, 25),
+                31,
+                LocalDate.of(2067, 1, 1));
         List<ClientInfoResponseDTO> clientList = Arrays.asList(client1, client2);
 
         when(clientService.getAllClients()).thenReturn(clientList);
@@ -136,9 +148,13 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$[0].id").value(client1.getId()))
                 .andExpect(jsonPath("$[0].nombre").value(client1.getNombre()))
                 .andExpect(jsonPath("$[0].apellido").value(client1.getApellido()))
+                .andExpect(jsonPath("$[0].edad").value(client1.getEdad()))
+                .andExpect(jsonPath("$[0].probableFechaMuerte").value(client1.getProbableFechaMuerte().toString()))
                 .andExpect(jsonPath("$[1].id").value(client2.getId()))
                 .andExpect(jsonPath("$[1].nombre").value(client2.getNombre()))
-                .andExpect(jsonPath("$[1].apellido").value(client2.getApellido()));
+                .andExpect(jsonPath("$[1].apellido").value(client2.getApellido()))
+                .andExpect(jsonPath("$[1].edad").value(client2.getEdad()))
+                .andExpect(jsonPath("$[1].probableFechaMuerte").value(client2.getProbableFechaMuerte().toString()));
     }
 
     @Test
