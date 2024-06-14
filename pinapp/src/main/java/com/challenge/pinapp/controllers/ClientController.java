@@ -6,6 +6,7 @@ import com.challenge.pinapp.dto.ClientStatisticResponseDTO;
 import com.challenge.pinapp.model.Client;
 import com.challenge.pinapp.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,7 +57,13 @@ public class ClientController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
             @ApiResponse(responseCode = "404", description = "Not found - The clients were not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+            @ApiResponse(
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = ClientInfoResponseDTO.class)))
+                    })
     })
     @GetMapping("/listclients")
     public ResponseEntity<List<ClientInfoResponseDTO>> getAllClients() {
